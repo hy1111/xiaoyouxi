@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,user-scalable=no" />
+		<style type="text/css">
+			html,
+			body {
+				height: 29rem;
+				overflow: hidden;
+			}
+			
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			
+			.center {
+				width: 16rem;
+				/*height: 100%;*/
+				/*background: url(img/map.jpg);*/
+				/*display: flex;*/
+				/*overflow: hidden;*/
+				position: relative;
+			}
+			
+			.h1 {
+				position: absolute;
+				top: 0px;
+			}
+			
+			.h2 {
+				position: absolute;
+				/*display: none;*/
+				top: -29rem;
+			}
+			
+			.h3 {
+				position: absolute;
+				/*display: none;*/
+				top: -29rem;
+			}
+			
+			.dd {
+				width: 4rem;
+				height: 4rem;
+				position: absolute;
+				z-index: 100;
+				top: 0rem;
+				left: 0rem;
+				transition: all 3s cubic-bezier(0, 0, 1, 1);
+			}
+			
+			.zd {
+				width: 2rem;
+				height: 2rem;
+				position: absolute;
+				transition: all 2s cubic-bezier(0, 0, 1, 1);
+				/*top: 5rem;*/
+			}
+			
+			.a1 {
+				width: 2.5rem;
+				height: 2.5rem;
+				margin: 26rem 6.5rem;
+				z-index: 100;
+				position: absolute;
+			}
+			
+			.fen {
+				position: absolute;
+				left: 0;
+				top: 0;
+				z-index: 99;
+			}
+			
+			.fen>span {
+				color: white;
+			}
+			
+			.bao {
+				position: absolute;
+				width: 2rem;
+				height: 2rem;
+			}
+			
+			.over {
+				width: 10rem;
+				height: 6rem;
+				display: none;
+				border: 1px solid white;
+				position: absolute;
+				left: 3rem;
+				top: 14rem;
+			}
+			
+			.over>p {
+				color: white;
+				margin: 2.5rem 2rem;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="center" id="demo">
+			<img src="img/map.jpg" class="h1" />
+			<img src="img/map.jpg" class="h2" />
+			<!--<img src="img/map.jpg" class="h3" />-->
+		</div>
+
+		<img src="img/my_2.png" class="a1" />
+		<div class="fen">
+			<span>总分数</span>
+			<span id="fen"></span>
+		</div>
+		<div class="over">
+			<p>game over</p>
+
+		</div>
+		<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript">
+			var html = document.documentElement;
+			var htmlw = html.clientWidth;
+			html.style.fontSize = htmlw / 16 + "px";
+			var ti = null;
+			var n = 0;
+			var m = 580;
+			var f = 0;
+			// 背景
+			function hu() {
+				ti = setInterval(function() {
+					n += 2;
+					$(".h1").css("top", n + "px")
+					$(".h2").css("top", (n - m) + "px")
+					if($(".h1").offset().top >= 580) {
+						$(".h1").remove();
+						n = 0;
+						$(".center").prepend("<img src='img/map.jpg' class='h1'/>")
+					}
+				}, 20)
+				//我方飞机
+				$(".a1").on("touchstart", function() {
+					$(document).on("touchmove", function(e) {
+						var xx = e.changedTouches[0].clientX
+						var yy = e.changedTouches[0].clientY
+						//					console.log(e.changedTouches[0])
+						//					console.log(yy)
+						$(".a1").offset({
+							left: xx - ($(".a1").width() / 2),
+							top: yy - ($(".a1").height() / 2)
+						})
+						//					console.log($(".a1").offset().left)
+						//					console.log($(".a1").offset().top)
+					})
+				})
+
+				//子弹
+				//			var c=0;
+
+				var ti2 = setInterval(function() {
+					var x = $(".a1").offset().left;
+					var y = $(".a1").offset().top;
+					$(".a1").before("<img src='img/myb_1.png' style='left:" + ((x-14) / 20) + "rem; top:" + (y-70) / 20 + "rem;' class='zd'>")
+					console.log($(".a1").offset().left)
+					$(".zd").css({
+						left: (x + 5),
+						top: -50
+					})
+					$.each($(".zd"), function() {
+						//					console.log($(this))
+						if($(this).offset().top <= 0) {
+							$(this).remove()
+						}
+					});
+				}, 400)
+				//			     
+				//敌机
+
+				var ti1 = setInterval(function() {
+
+					$(".center").append("<img src='img/ep_" + (parseInt(Math.random() * 10 + 1)) + ".png' style='left:" + (parseInt(Math.random() * 260 + 0) / 20) + "rem;' class='dd'/>")
+					$(".dd").css("top", $("body").height() / 16 + "rem")
+					console.log($(".center .dd"))
+					$.each($(".dd"), function() {
+						//					console.log($(this))
+						if($(this).offset().top >= 580) {
+							$(this).remove()
+						}
+					});
+					//              
+				}, 1000)
+
+				//碰撞
+				
+				var ti3 = setInterval(function() {
+					$.each($(".dd"), function() {
+						var that = $(this);
+
+						$.each($(".zd"), function() {
+							//	console.log(that.offset().top)
+//							console.log(that)
+							var zt = $(this).offset().top;
+							var zl = $(this).offset().left;
+							var dl = that.offset().left;
+							var dt = that.offset().top;
+							if(zt <= dt && Math.abs(dl - zl) <= 40) {
+								f++;
+								$(this).remove();
+								that.remove();
+								$(".center").append("<img src='img/blow.gif' class='bao'>")
+								$(".bao").css({
+									"left": dl,
+									"top": dt
+								})
+								$.each($(".bao"), function() {
+									var that = $(this)
+									return setTimeout(function() {
+										that.remove()
+									}, 1000);
+
+								});
+
+							}
+
+						})
+						var x = $(".a1").offset().left;
+						var y = $(".a1").offset().top;
+						$.each($(".dd"), function() {
+							var dl = that.offset().left;
+							var dt = that.offset().top;
+							if(y <= dt && Math.abs(dl - x) <= 40) {
+								$(this).remove();
+								$(".over").css("display", "block");
+								clearInterval(ti);
+								clearInterval(ti1);
+								clearInterval(ti2);
+							}
+						});
+
+					})
+					$("#fen").text(f)
+					//				
+				}, 10)
+			}
+                hu();
+			$(".over").click(function() {
+				$(".over").css("display","none");
+				f=0;
+				$(".a1").css("margin","26rem 6.5rem")
+                hu();
+                
+			})
+		</script>
+
+	</body>
+
+</html>

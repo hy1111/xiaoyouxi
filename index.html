@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title><meta name="viewport" content="width=device-width,user-scalable=no" />
+		<style type="text/css">
+			html,body{
+				height: 100%;
+				overflow: hidden;
+			}
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			.center{
+				/*border: 1px solid red;*/
+				width: 16rem;
+				height: 100%;					
+				background: url(img/load.png) no-repeat ;
+				display: flex;
+			}
+			.center>button{
+				width: 10rem;
+				height: 2rem;
+				font-size: 1.2rem;
+				/*justify-content: center;
+				align-items: flex-end;*/
+				margin: 25rem 3rem;
+				font-family:  "sf collegiate";
+				color: hotpink;
+				border: none;
+				background: transparent;
+			}
+			.aa{
+				display: inline-block;
+				width: 10rem;
+				height: 1rem;
+				margin: 25rem -11rem;
+				
+			}
+			.bb{
+				width: 2rem;
+				height: 1rem;
+				display: inline-block;
+				margin: 23rem 6rem;
+				
+			}
+			progress{
+				border-radius:3px 3px 3px 3px ;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="center">	
+			<button>开始游戏</button>
+		</div>
+		<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript" src="js/开始按钮.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				var html=document.documentElement;
+				var htmlw=html.clientWidth;
+				html.style.fontSize=htmlw/16+"px";
+				var n=1;
+				var tim=null
+				$("button").click(function(){
+					clearInterval(tim)
+					$(".center").css({
+						"background":"url(img/bg.jpg)",
+						"background-image":"no-repeat",
+						"background-size":"cover"
+					});
+					$("button").css("display","none")
+					$(".center").append("<span class='bb'>loading...</span>")
+					$(".center").append("<progress class='aa' max='100' value='1'></progress>")
+					var pro=$("progress")
+					tim=setInterval(function(){
+						n++;
+						pro.val(n)
+						if(n==100){
+							clearInterval(tim)
+							location.href="02.html"
+						}
+					},100)
+//					console.log(n)
+					
+						
+					
+						
+					
+					
+				})
+			})
+		</script>
+	</body>
+</html>
